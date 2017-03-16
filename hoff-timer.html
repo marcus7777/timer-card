@@ -1,0 +1,102 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
+<!--
+  `<hoff-timer></hoff-timer>` hoff
+  @demo demo.html
+-->
+<dom-module id="hoff-timer">
+  <template>
+    <style>:host {
+        display:inline-block;
+        font-size: 36px;
+        background: none repeat scroll 0% 0% #000;
+        color: #F5DEB3;
+        text-align: center;
+        padding: 20px;
+    }
+    span {
+        color:rgba(123, 112, 51, 1);
+    }
+    span:first-child {
+        color:white;
+    }</style>
+    <pre>
+    The Hoff Timer
+    <span>1   </span> laydown      
+    <span>3   </span> In/Out       
+    <span>1   </span> 1 min stopped
+    <span>0:12</span> 1:12         
+    <span>0:12</span> 1:24         
+    <span>0:12</span> 1:36         
+    <span>0:12</span> 1:48         
+    <span>0:12</span> 2:00         
+    <span>0:12</span> 2:12         
+    </pre>
+       
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "hoff-timer",
+    ready: function(undefined){
+      var interval = setInterval(function () {
+              $('span:first-child').each(function (indexInArray) {
+                  var timer = $(this).html();
+                  timer = timer.split(':');
+                  if (timer.length == 1) {
+                    var minutes = +parseInt(+timer[0], 10);
+                    var seconds = 0;
+                  }
+                  if (timer.length == 2) {
+                    var minutes = +parseInt(+timer[0], 10);
+                    var seconds = +parseInt(+timer[1], 10);
+                  } 
+                  seconds -= 1;
+                  // if (minutes < 0) return clearInterval(interval);
+      
+                  if (seconds < 0 && minutes != 0) {
+                      minutes -= 1;
+                      seconds = 59;
+                  }
+                  if (seconds < 10) seconds = '0' + seconds;
+      
+                  $(this).html(minutes + ':' + seconds);
+      
+                  if (minutes === 0 && seconds == 0){
+                      audioElement.play();
+                      $(this).remove();
+                  }
+              });
+          }, 1000);
+      
+          var audioElement = document.createElement('audio');
+          audioElement.setAttribute('src', 'http://www.freesound.org/data/previews/42/42095_317797-lq.mp3');
+          audioElement.setAttribute('autoplay:false', 'autoplay');
+          //audioElement.load code above. if you take out :false from the code the file will auto play than everythin works the same after that()
+          $.get();
+          audioElement.addEventListener("load", function () {
+              audioElement.play();
+          }, true);
+      
+      
+          $(document).keypress(function (e) {
+              if (e.which == 13) { //press enter the audio will play
+                  audioElement.play();
+      
+              } else if (e.which == 32) { //press spacebar the audio will                             pause play
+                  audioElement.pause();
+              }
+          });
+      
+          // the code below wil allow you to click the play and stop button with the mouse
+          $('.play-button').click(function () {
+              audioElement.play();
+          });
+      
+      
+          $('.pause').click(function () {
+              audioElement.pause();
+          });
+    },
+  })
+</script>
